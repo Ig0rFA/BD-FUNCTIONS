@@ -1,4 +1,4 @@
-	create table alunos (
+create table alunos (
     id int auto_increment primary key,
     nome_aluno varchar(50) not null,
     data_nasc date,
