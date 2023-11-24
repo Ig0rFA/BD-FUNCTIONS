@@ -21,7 +21,7 @@ area_id int not null,
 foreign key (area_id) references areas(id_area)
  );
 
-create table areas(
+create table area(
 id_area int  primary key auto_increment not null,
 nome_area varchar(50) not null
 );
