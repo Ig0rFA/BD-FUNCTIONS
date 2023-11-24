@@ -5,28 +5,27 @@ Nesta atividade utilizamos as funçoes.
 
 ## ETAPA 1-1:
  Criação das Tabelas:
-
-    create table alunos (
-    id int auto_increment primary key,
-    nome_aluno varchar(50) not null,
-    data_nasc date,
-    curso_id int,
-    foreign key (curso_id) references cursos(id)
-    );
+ ```
+create table alunos (
+id int  primary key auto_increment not null,
+nome_aluno varchar(50) not null,
+data_nasc date not null,
+curso_id int not null,
+foreign key (curso_id) references cursos(id)
+);
     
-    create table cursos (
-    id int auto_increment primary key,
-    nome_curso varchar (50) not null,
-    area_id int,
-    foreign key (area_id) references areas(id_area)
-    );
-    
-    create table areas(
-    id_area int auto_increment primary key,
-    nome_area varchar(50) not null
-	);
+create table cursos (
+id int  primary key auto_increment not null,
+nome_curso varchar (50) not null,
+area_id int not null,
+foreign key (area_id) references areas(id_area)
+ );
 
-    ```
+create table areas(
+id_area int  primary key auto_increment not null,
+nome_area varchar(50) not null
+);
+ ```
 ## ETAPA 1-2:
  Criação das Stored Procedures:
  ```
@@ -48,14 +47,14 @@ delimiter
     
  delimiter $$
 
-	create procedure SelCursoArea(
-	in areaID int
-	)
-	begin 
+create procedure SelCursoArea(
+in areaID int
+)
+begin 
 	select cursos.id as CursoID, nome_curso as NomeCurso
 	from cursos
 	where area_id = areaID;
-	end$$
+end$$
     delimiter ;
  
 	call SeloCursoArea(1);
@@ -63,16 +62,15 @@ delimiter
 ## ETAPA 1-3:
  Criação para o seguinte caso:O aluno possui um e-mail que deve ter seu endereço gerado automaticamente no seguinte formato:
 ```
-	alter table alunos 
-    add column sobrenome_aluno varchar(50) not null;
-    
-    alter table alunos
-    add column email varchar(100) not null;
-    
-	delimiter $$
-    create function GEmailAluno(
-    nome_aluno varchar(50),
-    sobrenome_aluno varchar(50)
+alter table alunos 
+add column sobrenome_aluno varchar(50) not null;  
+alter table alunos
+add column email varchar(100) not null;
+
+delimiter $$
+create function GEmailAluno(
+nome_aluno varchar(50),
+sobrenome_aluno varchar(50)
     )
     returns varchar(100)
     begin
@@ -127,7 +125,7 @@ delimiter $$
  ```
 delimiter $$
     create procedure matricularAlunoCurso(
-		in nome_aluno varchar (50),
+	in nome_aluno varchar (50),
         in data_nascimento date,
         in nome_curso varchar (50),
         in nome_area varchar (50)
@@ -155,27 +153,26 @@ delimiter $$
  Criação para o seguinte caso: Caso o aluno já esteja matriculado em um curso, essa matrícula não pode ser realizada:
 ```
  delimiter $$
-	create procedure MatricularAlunoEmCurso(
-		in nome_aluno varchar (50),
-		in data_nascimento date,
-		in nome_curso varchar(50),
-		in nome_area varchar(50)
+create procedure MatricularAlunoEmCurso(
+	in nome_aluno varchar (50),
+	in data_nascimento date,
+	in nome_curso varchar(50),
+	in nome_area varchar(50)
 	)
-	begin
-		insert into Alunos (nome, data_nascimento)
-		values (nome_aluno, data_nascimento)
-		on duplicate key update id_aluno = LAST_INSERT_ID(id_aluno);
+begin
+	insert into Alunos (nome, data_nascimento)
+	values (nome_aluno, data_nascimento)
+	on duplicate key update id_aluno = LAST_INSERT_ID(id_aluno);
 
-		insert ignore into Matriculas (aluno_id, curso_id, data_matricula)
-		select A.id_aluno, C.id_curso, CURDATE()
-		from Alunos A
-		join Cursos C on C.nome_curso = nome_curso
-		join Areas Ar on Ar.nome_area = nome_area
-		where A.nome = nome_aluno
-		and A.data_nascimento = data_nascimento
-		and C.area_id = Ar.id_area;
-	end$$
-	
+insert ignore into Matriculas (aluno_id, curso_id, data_matricula) select A.id_aluno, C.id_curso, CURDATE()
+	from Alunos A
+	join Cursos C on C.nome_curso = nome_curso
+	join Areas Ar on Ar.nome_area = nome_area
+	where A.nome = nome_aluno
+	and A.data_nascimento = data_nascimento
+	and C.area_id = Ar.id_area;
+end$$
+
 	delimiter ;
 ```
 ## ETAPA 1-7:
